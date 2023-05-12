@@ -10,7 +10,7 @@ using ReminderBot.Data;
 namespace ReminderBot.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230512170458_ReminderConfigurationAdd")]
+    [Migration("20230512191650_ReminderConfigurationAdd")]
     partial class ReminderConfigurationAdd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

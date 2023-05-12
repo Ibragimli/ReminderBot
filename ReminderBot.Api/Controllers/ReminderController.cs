@@ -23,17 +23,41 @@ namespace ReminderBot.Api.Controllers
         {
             _reminderServices = reminderServices;
         }
-        //[HttpPost]
-        //[Route("YeniElan")]
-        //[HttpPost]
-        //public async Task<IActionResult> CreateReminder([FromBody] Reminder reminder)
-        //{
-        //    // Validate the reminder properties
 
-        //    // Save the reminder to the database
 
-        //    return Ok();
-        //}
+        [HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> Create([FromBody] ReminderCreatePostDto reminderCreatePostDto)
+        {
+            Reminder reminder = new Reminder();
+            try
+            {
+                reminder = await _reminderServices.CreateReminder(reminderCreatePostDto);
+            }
+            catch (ReminderNullException e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            catch (EmailFormatException e)
+            {
+                return StatusCode(400, e.Message);
+            }
+            catch (ValueFormatException e)
+            {
+                return StatusCode(400, e.Message);
+            }
+            catch (DateFormatException e)
+            {
+                return StatusCode(400, e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            return StatusCode(202, reminder);
+        }
+
+
         [HttpGet]
         [Route("getall")]
         public async Task<IActionResult> GetAll(int page = 1, string method = null)
@@ -55,7 +79,8 @@ namespace ReminderBot.Api.Controllers
             {
                 return StatusCode(404, e.Message);
             }
-            return Ok(reminders);
+            return StatusCode(202, reminders);
+
         }
 
 

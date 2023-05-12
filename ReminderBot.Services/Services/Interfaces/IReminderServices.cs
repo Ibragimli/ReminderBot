@@ -1,4 +1,5 @@
-﻿using ReminderBot.Services.DTOs;
+﻿using ReminderBot.Core.Entities;
+using ReminderBot.Services.DTOs;
 using ReminderBot.Services.DTOs.Reminder;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace ReminderBot.Services.Services.Interfaces
     {
         public Task<PagenatedListDto<ReminderListItemDto>> GetAllReminder(int page, string search);
         public Task<ReminderGetDto> GetReminder(int id);
+        public Task<Reminder> CreateReminder(ReminderCreatePostDto reminderCreatePostDto);
     }
 }
