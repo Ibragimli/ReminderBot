@@ -11,12 +11,12 @@ namespace ReminderBot.Data
     public class UnitOfWork : IUnitOfWork
     {
         private readonly DataContext _context;
-        private IReminderRepository _reminderBotRepository;
+        private IReminderRepository _reminderRepository;
         public UnitOfWork(DataContext context)
         {
             _context = context;
         }
-        public IReminderRepository ReminderBotRepository => _reminderBotRepository = _reminderBotRepository ?? new ReminderRepository(_context);
+        public IReminderRepository ReminderRepository => _reminderRepository = _reminderRepository ?? new ReminderRepository(_context);
         public async Task<int> CommitAsync()
         {
             return await _context.SaveChangesAsync();

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ReminderBot.Api.ServiceExtentions;
 using ReminderBot.Data;
 using System;
 using System.Collections.Generic;
@@ -31,11 +32,10 @@ namespace ReminderBot.Api
             //services.AddControllers()
             //    .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserRegisterPostDto>());
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
-            //services.AddAutoMapper(opt =>
-            //{
-            //    opt.AddProfile(new AppProfile());
-            //});
+           
+            services.AddServiceScopeExtention();
 
+         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +47,8 @@ namespace ReminderBot.Api
             }
 
             app.UseHttpsRedirection();
+            
+            app.AddExceptionHandlerService();
 
             app.UseRouting();
 

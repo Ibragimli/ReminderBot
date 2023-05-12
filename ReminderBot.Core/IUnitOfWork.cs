@@ -8,7 +8,7 @@ namespace ReminderBot.Core
 {
     public interface IUnitOfWork
     {
-        IReminderRepository ReminderBotRepository { get; }
+        IReminderRepository ReminderRepository { get; }
         Task<int> CommitAsync();
     }
 }
