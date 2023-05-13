@@ -20,6 +20,9 @@ namespace ReminderBot.Api.ServiceExtentions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IReminderRepository, ReminderRepository>();
             services.AddScoped<IReminderServices, ReminderServices>();
+            services.AddScoped<IReminderBackgroundServices, ReminderBackgroundServices>();
+
+            services.AddScoped<IEmailServices, EmailServices>(); 
             services.AddAutoMapper(opt => { opt.AddProfile(new AppProfile()); });
 
         }

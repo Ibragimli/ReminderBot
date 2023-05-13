@@ -12,8 +12,10 @@ namespace ReminderBot.Services.Services.Interfaces
     {
         public Task<PagenatedListDto<ReminderListItemDto>> GetAllReminder(int page, string search);
         public Task<ReminderGetDto> GetReminder(int id);
+        public Task SendMessage();
         public Task<Reminder> CreateReminder(ReminderPostDto reminderPostDto);
         public Task<Reminder> UpdateReminder(ReminderPutDto reminderPutDto);
+        public Task DeleteReminders(ReminderDeleteDto reminderDeleteDto);
 
     }
 }

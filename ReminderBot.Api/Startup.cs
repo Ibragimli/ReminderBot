@@ -1,4 +1,5 @@
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using ReminderBot.Api.ServiceExtentions;
 using ReminderBot.Data;
 using ReminderBot.Services.DTOs.Reminder;
+using ReminderBot.Services.Services.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +35,13 @@ namespace ReminderBot.Api
             services.AddControllers()
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ReminderPostDto>());
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
+            //services.AddHangfire(config =>  config.UseSqlServerStorage(Configuration.GetConnectionString("Default")));
+
+            //services.AddHangfire(x=>{
+            //    x.UseSqlServerStorage(Configuration.GetConnectionString("Default");
+            //    RecurringJob.AddOrUpdate<Job>(j=>j.DBControl(), "* * * * *");
+            //});
+            // Arka plan işleri için sınıfın nesnesini ekleyin
             services.AddServiceScopeExtention();
 
 
@@ -53,6 +62,7 @@ namespace ReminderBot.Api
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>
             {

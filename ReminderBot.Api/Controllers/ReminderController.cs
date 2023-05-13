@@ -18,15 +18,50 @@ namespace ReminderBot.Api.Controllers
     public class ReminderController : ControllerBase
     {
         private readonly IReminderServices _reminderServices;
+        private readonly IReminderBackgroundServices _reminderBackgroundServices;
 
-        public ReminderController(IReminderServices reminderServices)
+        public ReminderController(IReminderServices reminderServices, IReminderBackgroundServices reminderBackgroundServices)
         {
             _reminderServices = reminderServices;
+            _reminderBackgroundServices = reminderBackgroundServices;
         }
 
 
-        [HttpPost]
-        [Route("create")]
+
+        [HttpGet("servisrun")]
+        public async Task<IActionResult> ServisRun()
+        {
+            try
+            {
+                await _reminderBackgroundServices.StartScheduledExecution();
+            }
+
+            catch (Exception e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            return StatusCode(202, "Message send successful  ");
+        }
+        [HttpPost("sendmessage/{id}")]
+        public async Task<IActionResult> SendMessage(int id)
+        {
+            try
+            {
+                await _reminderServices.SendMessage();
+            }
+            catch (ReminderNullException e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            return StatusCode(202, "Message send successful  ");
+        }
+
+
+        [HttpPost("{create}")]
         public async Task<IActionResult> Create([FromBody] ReminderPostDto reminderPostDto)
         {
             Reminder reminder = new Reminder();
@@ -57,10 +92,7 @@ namespace ReminderBot.Api.Controllers
             return StatusCode(202, reminder);
         }
 
-
-
-        [HttpPut]
-        [Route("update")]
+        [HttpPut("{update}")]
         public async Task<IActionResult> Update([FromBody] ReminderPutDto reminderPutDto)
         {
             Reminder reminder = new Reminder();
@@ -91,10 +123,25 @@ namespace ReminderBot.Api.Controllers
             return StatusCode(202, reminder);
         }
 
+        [HttpDelete("{ids}")]
+        public async Task<IActionResult> Delete([FromBody] ReminderDeleteDto reminderDeleteDto)
+        {
+            try
+            {
+                await _reminderServices.DeleteReminders(reminderDeleteDto);
+            }
+            catch (ReminderNullException e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            return StatusCode(202, "Delete successful");
+        }
 
-
-        [HttpGet]
-        [Route("getall")]
+        [HttpGet("")]
         public async Task<IActionResult> GetAll(int page = 1, string method = null)
         {
             PagenatedListDto<ReminderListItemDto> reminders;
@@ -118,11 +165,9 @@ namespace ReminderBot.Api.Controllers
 
         }
 
-
-
-        [HttpGet]
-        [Route("getreminder")]
-        public async Task<IActionResult> GetReminder(int id)
+        //https://localhost:44347/api/reminder/6
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
         {
             ReminderGetDto reminder = new ReminderGetDto();
             try
@@ -132,7 +177,6 @@ namespace ReminderBot.Api.Controllers
             }
             catch (ReminderNotFoundException e)
             {
-
                 return StatusCode(404, e.Message);
             }
             catch (Exception e)
@@ -141,22 +185,6 @@ namespace ReminderBot.Api.Controllers
             }
             return StatusCode(202, reminder);
         }
-
-
-
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateReminder(int id, [FromBody] Reminder reminder)
-        //{
-        //    // Find the reminder in the database by ID    return Ok();
-        //}
-        //[HttpDelete]
-        //public async Task<IActionResult> DeleteReminders([FromBody] int[] ids)
-        //{
-        //    // Find and delete the reminders with the specified IDs
-
-        //    return Ok();
-        //}
-
 
     }
 }

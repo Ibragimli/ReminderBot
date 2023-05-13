@@ -36,6 +36,7 @@ namespace ReminderBot.Api.ServiceExtentions
                             code = 400;
                         if (contextFeature.Error is DateFormatException)
                             code = 400;
+                     
                         //if (contextFeature.Error is ImageFormatException)
                         //    code = 400;
                         //if (contextFeature.Error is ImageNullException)

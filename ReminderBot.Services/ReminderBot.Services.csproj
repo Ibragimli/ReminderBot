@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.0.0" />
+    <PackageReference Include="MimeKit" Version="4.0.0" />
+    <PackageReference Include="Quartz" Version="3.6.2" />
+    <PackageReference Include="Quartz.AspNetCore" Version="3.6.2" />
+    <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ReminderBot.Data\ReminderBot.Data.csproj" />
   </ItemGroup>
 
