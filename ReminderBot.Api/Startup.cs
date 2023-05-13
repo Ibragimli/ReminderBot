@@ -37,23 +37,17 @@ namespace ReminderBot.Api
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ReminderPostDto>());
            
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
-          
-            services.AddMemoryCache();
+
             services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
-            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>(); 
-            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
+            services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("Default")));
 
-            //services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("Default")));
-
-            //services.AddHangfire(x =>
-            //{
-            //    x.UseSqlServerStorage(Configuration.GetConnectionString("Default"));
-            //    RecurringJob.AddOrUpdate<Job>(j => j.DBControl(), "*/2 * * * *");
-            //});
-            //services.AddHangfireServer();
+            services.AddHangfire(x =>
+            {
+                x.UseSqlServerStorage(Configuration.GetConnectionString("Default"));
+                RecurringJob.AddOrUpdate<Job>(j => j.DBControl(), "* * * * *");
+            });
+            services.AddHangfireServer();
 
             services.AddServiceScopeExtention();
 
@@ -75,7 +69,7 @@ namespace ReminderBot.Api
             app.UseRouting();
 
             app.UseAuthorization();
-            //app.UseHangfireDashboard();
+            app.UseHangfireDashboard();
             app.UseIpRateLimiting();
 
             app.UseEndpoints(endpoints =>

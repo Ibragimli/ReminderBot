@@ -72,8 +72,8 @@ namespace ReminderBot.Services.Services.Implementations
             if (page < 1) throw new PageIndexFormatException("The number of pages can be 1 or more than 1!");
             if (method?.Length > 11) throw new PageIndexFormatException("The length of the method cannot exceed 10!");
 
-            IEnumerable<Reminder> reminders = await _unitOfWork.ReminderRepository.GetAllPagenatedAsync(x => string.IsNullOrWhiteSpace(method) ? true : x.Method.ToLower().Contains(method) == true && !x.IsDelete, page, 5);
-            int totalCount = await _unitOfWork.ReminderRepository.GetTotalCountAsync(x => string.IsNullOrWhiteSpace(method) ? true : x.Method.ToLower().Contains(method) == true && !x.IsDelete);
+            IEnumerable<Reminder> reminders = await _unitOfWork.ReminderRepository.GetAllPagenatedAsync(x => string.IsNullOrWhiteSpace(method) ? true : x.Method.ToLower().Contains(method) == true, page, 5);
+            int totalCount = await _unitOfWork.ReminderRepository.GetTotalCountAsync(x => string.IsNullOrWhiteSpace(method) ? true : x.Method.ToLower().Contains(method) == true );
 
             IEnumerable<ReminderListItemDto> itemDtos = _mapper.Map<IEnumerable<ReminderListItemDto>>(reminders);
             PagenatedListDto<ReminderListItemDto> model = new PagenatedListDto<ReminderListItemDto>(itemDtos, totalCount, page, 5);
@@ -84,7 +84,7 @@ namespace ReminderBot.Services.Services.Implementations
         public async Task<ReminderGetDto> GetReminder(int id)
         {
             DateTime now = DateTime.UtcNow.AddHours(4);
-            Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => !x.IsDelete && x.Id == id);
+            Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => x.Id == id);
             if (reminderExist == null)
                 throw new ReminderNotFoundException("Reminder not found!");
             if (reminderExist.SendAt < now)
@@ -95,7 +95,7 @@ namespace ReminderBot.Services.Services.Implementations
         }
         public async Task<Reminder> UpdateReminder(ReminderPutDto reminderPutDto)
         {
-            Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => x.Id == reminderPutDto.Id && !x.IsDelete);
+            Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => x.Id == reminderPutDto.Id);
             DateTime now = DateTime.UtcNow.AddHours(4);
             if (reminderExist == null)
                 throw new ReminderNullException("Reminder notfound error!");

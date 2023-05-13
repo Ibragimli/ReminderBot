@@ -25,7 +25,7 @@ namespace ReminderBot.Services.Services.Implementations
         }
         public async Task DBControl()
         {
-            var id = await CheckSendAt();
+            var id = await CheckReminders();
             Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => x.Id == id);
             if (reminderExist != null)
             {
@@ -49,7 +49,7 @@ namespace ReminderBot.Services.Services.Implementations
                 }
             }
         }
-        private async Task<int> CheckSendAt()
+        private async Task<int> CheckReminders()
         {
             DateTime now = DateTime.UtcNow.AddHours(4);
             Reminder reminder = new Reminder();

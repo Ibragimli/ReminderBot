@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AspNetCoreRateLimit;
+using Microsoft.Extensions.DependencyInjection;
 using ReminderBot.Core;
 using ReminderBot.Core.Repositories;
 using ReminderBot.Data;
@@ -15,6 +16,7 @@ namespace ReminderBot.Api.ServiceExtentions
 {
     public static class ServiceScopeExtention
     {
+     
         public static void AddServiceScopeExtention(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -23,6 +25,12 @@ namespace ReminderBot.Api.ServiceExtentions
 
             services.AddScoped<IEmailServices, EmailServices>(); 
             services.AddAutoMapper(opt => { opt.AddProfile(new AppProfile()); });
+
+            services.AddMemoryCache();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
         }
     }

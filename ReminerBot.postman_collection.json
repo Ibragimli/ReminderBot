@@ -1,0 +1,168 @@
+{
+	"info": {
+		"_postman_id": "fffd1313-47b8-41de-ba00-266dcb8da810",
+		"name": "ReminerBot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27036692"
+	},
+	"item": [
+		{
+			"name": "Reminder",
+			"item": [
+				{
+					"name": "GetReminder",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44347/api/reminder/16",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44347",
+							"path": [
+								"api",
+								"reminder",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllReminder",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44347/api/reminder?page=1&method=email",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44347",
+							"path": [
+								"api",
+								"reminder"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "method",
+									"value": "email"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"to\": \"asda@sads.ru\",\r\n\"content\": \"Don't forget to attend the meeting at 6:00 PM today.\",\r\n\"sendAt\": \"2023-05-14T01:59:40\",\r\n\"method\": \"email\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44347/api/reminder/create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44347",
+							"path": [
+								"api",
+								"reminder",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"id\": 18,\r\n\"to\": \"asda@sads.bk\",\r\n\"content\": \"Don't forget to attend the meeting at 6:00 PM today.\",\r\n\"sendAt\": \"2023-06-14T01:59:40\",\r\n\"method\": \"email\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44347/api/reminder/update",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44347",
+							"path": [
+								"api",
+								"reminder",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ids\": [1]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44347/api/reminder/delete",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44347",
+							"path": [
+								"api",
+								"reminder",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
