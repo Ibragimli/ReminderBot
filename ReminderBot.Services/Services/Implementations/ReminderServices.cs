@@ -83,49 +83,24 @@ namespace ReminderBot.Services.Services.Implementations
 
         public async Task<ReminderGetDto> GetReminder(int id)
         {
+            DateTime now = DateTime.UtcNow.AddHours(4);
             Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => !x.IsDelete && x.Id == id);
             if (reminderExist == null)
                 throw new ReminderNotFoundException("Reminder not found!");
+            if (reminderExist.SendAt < now)
+                throw new ReminderNotFoundException("Reminder already send!");
             ReminderGetDto userDto = new ReminderGetDto();
             userDto = _mapper.Map<ReminderGetDto>(reminderExist);
             return userDto;
         }
-
-        public async Task SendMessage()
-        {
-            var id = await CheckSendAt();
-            Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => x.Id == id && !x.IsDelete);
-            if (reminderExist == null)
-                throw new ReminderNullException("Reminder notfound error!");
-
-
-            if (reminderExist.Method == "email")
-            {
-                string body = string.Empty;
-
-                body += "Email: " + reminderExist.To;
-                body += " Content: " + reminderExist.Content;
-                _emailServices.Send(reminderExist.To, "ReminderMessage", body);
-            }
-            else
-            {
-                var botToken = _configuration.GetSection("TelegramBot:Token").Value;
-                var chatId = reminderExist.To;
-
-                var botClient = new TelegramBotClient(botToken);
-                var content = reminderExist.Content;
-
-                await botClient.SendTextMessageAsync(chatId, content);
-            }
-        }
-
         public async Task<Reminder> UpdateReminder(ReminderPutDto reminderPutDto)
         {
-
             Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => x.Id == reminderPutDto.Id && !x.IsDelete);
+            DateTime now = DateTime.UtcNow.AddHours(4);
             if (reminderExist == null)
                 throw new ReminderNullException("Reminder notfound error!");
-
+            if (reminderExist.SendAt < now)
+                throw new ReminderNotFoundException("Reminder already send!");
             if (reminderPutDto.Method == "telegram" || reminderPutDto.Method == "email")
             {
                 if (reminderPutDto.Method.ToLower() == "email")
@@ -150,16 +125,7 @@ namespace ReminderBot.Services.Services.Implementations
 
             return Regex.IsMatch(value, pattern);
         }
-        private async Task<int> CheckSendAt()
-        {
-            DateTime now = DateTime.UtcNow.AddHours(4);
-            Reminder reminder = new Reminder();
-            List<int> list = new List<int>();
-            if (await _unitOfWork.ReminderRepository.IsExistAsync(x => x.SendAt > now))
-            {
-                reminder = await _unitOfWork.ReminderRepository.GetAsync(x => x.SendAt > now);
-            }
-            return reminder.Id;
-        }
+
+
     }
 }

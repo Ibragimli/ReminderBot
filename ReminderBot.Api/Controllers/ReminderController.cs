@@ -18,48 +18,11 @@ namespace ReminderBot.Api.Controllers
     public class ReminderController : ControllerBase
     {
         private readonly IReminderServices _reminderServices;
-        private readonly IReminderBackgroundServices _reminderBackgroundServices;
 
-        public ReminderController(IReminderServices reminderServices, IReminderBackgroundServices reminderBackgroundServices)
+        public ReminderController(IReminderServices reminderServices)
         {
             _reminderServices = reminderServices;
-            _reminderBackgroundServices = reminderBackgroundServices;
         }
-
-
-
-        [HttpGet("servisrun")]
-        public async Task<IActionResult> ServisRun()
-        {
-            try
-            {
-                await _reminderBackgroundServices.StartScheduledExecution();
-            }
-
-            catch (Exception e)
-            {
-                return StatusCode(404, e.Message);
-            }
-            return StatusCode(202, "Message send successful  ");
-        }
-        [HttpPost("sendmessage/{id}")]
-        public async Task<IActionResult> SendMessage(int id)
-        {
-            try
-            {
-                await _reminderServices.SendMessage();
-            }
-            catch (ReminderNullException e)
-            {
-                return StatusCode(404, e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(404, e.Message);
-            }
-            return StatusCode(202, "Message send successful  ");
-        }
-
 
         [HttpPost("{create}")]
         public async Task<IActionResult> Create([FromBody] ReminderPostDto reminderPostDto)
@@ -103,6 +66,10 @@ namespace ReminderBot.Api.Controllers
             catch (ReminderNullException e)
             {
                 return StatusCode(404, e.Message);
+            }
+            catch (ReminderAlreadySendException e)
+            {
+                return StatusCode(401, e.Message);
             }
             catch (EmailFormatException e)
             {
@@ -151,7 +118,7 @@ namespace ReminderBot.Api.Controllers
             }
             catch (PageIndexFormatException e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(401, e.Message);
             }
             catch (ValueFormatException e)
             {
@@ -165,7 +132,6 @@ namespace ReminderBot.Api.Controllers
 
         }
 
-        //https://localhost:44347/api/reminder/6
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -178,6 +144,10 @@ namespace ReminderBot.Api.Controllers
             catch (ReminderNotFoundException e)
             {
                 return StatusCode(404, e.Message);
+            }
+            catch (ReminderAlreadySendException e)
+            {
+                return StatusCode(401, e.Message);
             }
             catch (Exception e)
             {

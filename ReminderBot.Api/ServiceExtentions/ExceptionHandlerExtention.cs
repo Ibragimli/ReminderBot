@@ -36,41 +36,10 @@ namespace ReminderBot.Api.ServiceExtentions
                             code = 400;
                         if (contextFeature.Error is DateFormatException)
                             code = 400;
-                     
-                        //if (contextFeature.Error is ImageFormatException)
-                        //    code = 400;
-                        //if (contextFeature.Error is ImageNullException)
-                        //    code = 404;
-                        //if (contextFeature.Error is AuthenticationCodeException)
-                        //    code = 400;
-                        //if (contextFeature.Error is CookieNotActiveException)
-                        //    code = 404;
-                        //if (contextFeature.Error is ItemNullException)
-                        //    code = 404;
-                        //if (contextFeature.Error is ItemFormatException)
-                        //    code = 400;
-
-                        //if (contextFeature.Error is NotFoundException)
-                        //    code = 404;
-                        //if (contextFeature.Error is PaymentValueException)
-                        //    code = 400;
-                        //if (contextFeature.Error is ItemAlreadyException)
-                        //    code = 404;
-                        //if (contextFeature.Error is ValueAlreadyExpception)
-                        //    code = 404;
-                        //if (contextFeature.Error is ItemUseException)
-                        //    code = 500;
-                        //    if (contextFeature.Error is ImageCountException)
-                        //        code = 400;
-                        //if (contextFeature.Error is UserNotFoundException)
-                        //    code = 404;
-                        //if (contextFeature.Error is UserFormatException)
-                        //    code = 400;
+                        if (contextFeature.Error is ReminderAlreadySendException)
+                            code = 401;
                         if (contextFeature.Error is PageIndexFormatException)
-                            code = 400;
-                        //if (contextFeature.Error is ExpirationDateException)
-                        //    code = 400;
-
+                            code = 401;
                     }
 
                     context.Response.StatusCode = code;

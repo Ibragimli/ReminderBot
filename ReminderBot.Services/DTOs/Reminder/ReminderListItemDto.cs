@@ -13,7 +13,8 @@ namespace ReminderBot.Services.DTOs.Reminder
         public string Content { get; set; }
         public DateTime SendAt { get; set; }
         public string Method { get; set; }
-        public DateTime CreatedTime { get; set; }
+        public bool IsDelete { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
    
 }
