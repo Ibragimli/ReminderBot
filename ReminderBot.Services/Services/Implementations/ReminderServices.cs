@@ -27,16 +27,14 @@ namespace ReminderBot.Services.Services.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Reminder> CreateReminder(ReminderCreatePostDto reminderCreatePostDto)
+        public async Task<Reminder> CreateReminder(ReminderPostDto reminderPostDto)
         {
-            if (reminderCreatePostDto == null)
-                throw new ReminderNullException("Item notfound exception!");
-            if (reminderCreatePostDto.Method == "telegram" || reminderCreatePostDto.Method == "email")
+            if (reminderPostDto.Method == "telegram" || reminderPostDto.Method == "email")
             {
-                if (reminderCreatePostDto.Content.ToLower() == "email")
-                    if (!IsValidEmail(reminderCreatePostDto.To))
+                if (reminderPostDto.Method.ToLower() == "email")
+                    if (!IsValidEmail(reminderPostDto.To))
                         throw new EmailFormatException("Please enter a valid email!");
-                var reminder = _mapper.Map<Reminder>(reminderCreatePostDto);
+                var reminder = _mapper.Map<Reminder>(reminderPostDto);
                 await _unitOfWork.ReminderRepository.InsertAsync(reminder);
                 await _unitOfWork.CommitAsync();
                 return reminder;
@@ -67,6 +65,30 @@ namespace ReminderBot.Services.Services.Implementations
             ReminderGetDto userDto = new ReminderGetDto();
             userDto = _mapper.Map<ReminderGetDto>(reminderExist);
             return userDto;
+        }
+
+        public async Task<Reminder> UpdateReminder(ReminderPutDto reminderPutDto)
+        {
+
+            Reminder reminderExist = await _unitOfWork.ReminderRepository.GetAsync(x => x.Id == reminderPutDto.Id && !x.IsDelete);
+            if (reminderExist == null)
+                throw new ReminderNullException("Reminder notfound error!");
+
+            if (reminderPutDto.Method == "telegram" || reminderPutDto.Method == "email")
+            {
+                if (reminderPutDto.Method.ToLower() == "email")
+                    if (!IsValidEmail(reminderPutDto.To))
+                        throw new EmailFormatException("Please enter a valid email!");
+                reminderExist.Method = reminderPutDto.Method;
+                reminderExist.To = reminderPutDto.To;
+                reminderExist.SendAt = reminderPutDto.SendAt;
+                reminderExist.Content = reminderPutDto.Content;
+                reminderExist.ModifiedDate = DateTime.UtcNow.AddHours(4);
+
+                await _unitOfWork.CommitAsync();
+                return reminderExist;
+            }
+            throw new ValueFormatException("The method parameter should be either 'email' or 'telegram' ");
         }
 
         private bool IsValidEmail(string value)

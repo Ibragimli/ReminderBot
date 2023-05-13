@@ -27,12 +27,12 @@ namespace ReminderBot.Api.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> Create([FromBody] ReminderCreatePostDto reminderCreatePostDto)
+        public async Task<IActionResult> Create([FromBody] ReminderPostDto reminderPostDto)
         {
             Reminder reminder = new Reminder();
             try
             {
-                reminder = await _reminderServices.CreateReminder(reminderCreatePostDto);
+                reminder = await _reminderServices.CreateReminder(reminderPostDto);
             }
             catch (ReminderNullException e)
             {
@@ -56,6 +56,41 @@ namespace ReminderBot.Api.Controllers
             }
             return StatusCode(202, reminder);
         }
+
+
+
+        [HttpPut]
+        [Route("update")]
+        public async Task<IActionResult> Update([FromBody] ReminderPutDto reminderPutDto)
+        {
+            Reminder reminder = new Reminder();
+            try
+            {
+                reminder = await _reminderServices.UpdateReminder(reminderPutDto);
+            }
+            catch (ReminderNullException e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            catch (EmailFormatException e)
+            {
+                return StatusCode(400, e.Message);
+            }
+            catch (ValueFormatException e)
+            {
+                return StatusCode(400, e.Message);
+            }
+            catch (DateFormatException e)
+            {
+                return StatusCode(400, e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(404, e.Message);
+            }
+            return StatusCode(202, reminder);
+        }
+
 
 
         [HttpGet]

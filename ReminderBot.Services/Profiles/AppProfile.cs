@@ -13,7 +13,7 @@ namespace ReminderBot.Services.Profiles
         {
             CreateMap<Reminder, ReminderListItemDto>();
             CreateMap<Reminder, ReminderGetDto>();
-            CreateMap<ReminderCreatePostDto, Reminder>();
+            CreateMap<ReminderPostDto, Reminder>();
 
         }
     }

@@ -31,7 +31,7 @@ namespace ReminderBot.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ReminderCreatePostDto>());
+                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ReminderPostDto>());
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddServiceScopeExtention();
 

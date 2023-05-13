@@ -3,21 +3,24 @@ using ReminderBot.Services.CustomExceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace ReminderBot.Services.DTOs.Reminder
 {
-    public class ReminderCreatePostDto
+
+    public class ReminderPutDto
     {
+        public int Id { get; set; }
         public string To { get; set; }
         public string Content { get; set; }
         public DateTime SendAt { get; set; }
         public string Method { get; set; }
     }
-    public class ReminderCreatePostDtoValidator : AbstractValidator<ReminderCreatePostDto>
+    public class ReminderPutDtoValidator : AbstractValidator<ReminderPutDto>
     {
-        public ReminderCreatePostDtoValidator()
+        public ReminderPutDtoValidator()
         {
+            RuleFor(x => x.Id)
+             .NotEmpty().WithMessage("The id field must not be empty.");
             RuleFor(x => x.To)
                 .NotEmpty().WithMessage("Parameter should be a valid email address for email reminders, or a chat ID for Telegram reminders.")
                 .MaximumLength(45).WithMessage("The length of the 'to' cannot exceed 45!");
@@ -30,18 +33,14 @@ namespace ReminderBot.Services.DTOs.Reminder
             RuleFor(x => x.SendAt).NotEmpty().WithMessage("The date field must not be empty.")
                 .Must(BeGreaterThanDate).WithMessage("Parameter must be greater than the current date!");
         }
+
         private bool BeGreaterThanDate(DateTime sendAt)
         {
             if (!DateTime.TryParse(sendAt.ToString(), out DateTime parsedDate))
                 throw new DateFormatException("Date format is invalid!");
             return parsedDate > DateTime.UtcNow.AddHours(4);
         }
-        //private bool BeGreaterThanDate(string sendAt)
-        //{
-        //    if (!DateTime.TryParse(sendAt, out DateTime parsedDate))
-        //        throw new DateFormatException("Date format is invalid!");
-        //    return parsedDate > DateTime.UtcNow.AddHours(4);
-        //}
+
 
     }
 }
