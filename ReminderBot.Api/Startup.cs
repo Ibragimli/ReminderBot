@@ -42,7 +42,7 @@ namespace ReminderBot.Api
             services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>(); // IProcessingStrategy'yi AsyncKeyLockProcessingStrategy ile değiştirdik
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>(); 
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
 
