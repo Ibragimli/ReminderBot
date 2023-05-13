@@ -14,7 +14,6 @@ namespace ReminderBot.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class ReminderController : ControllerBase
     {
         private readonly IReminderServices _reminderServices;

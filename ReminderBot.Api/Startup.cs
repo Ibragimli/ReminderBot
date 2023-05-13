@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using AspNetCoreRateLimit;
+using FluentValidation.AspNetCore;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +37,14 @@ namespace ReminderBot.Api
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ReminderPostDto>());
            
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
+          
+            services.AddMemoryCache();
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>(); // IProcessingStrategy'yi AsyncKeyLockProcessingStrategy ile değiştirdik
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
 
             //services.AddHangfire(config => config.UseSqlServerStorage(Configuration.GetConnectionString("Default")));
 
@@ -67,6 +76,7 @@ namespace ReminderBot.Api
 
             app.UseAuthorization();
             //app.UseHangfireDashboard();
+            app.UseIpRateLimiting();
 
             app.UseEndpoints(endpoints =>
             {

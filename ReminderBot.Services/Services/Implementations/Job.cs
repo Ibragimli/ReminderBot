@@ -53,9 +53,10 @@ namespace ReminderBot.Services.Services.Implementations
         {
             DateTime now = DateTime.UtcNow.AddHours(4);
             Reminder reminder = new Reminder();
-            if (await _unitOfWork.ReminderRepository.IsExistAsync(x => x.SendAt < now))
+            if (await _unitOfWork.ReminderRepository.IsExistAsync(x => x.SendAt < now && !x.IsDelete))
             {
-                reminder = await _unitOfWork.ReminderRepository.GetAsync(x => x.SendAt < now);
+                reminder = await _unitOfWork.ReminderRepository.GetAsync(x => x.SendAt < now && !x.IsDelete);
+                reminder.IsDelete = true;
                 await _unitOfWork.CommitAsync();
             }
             return reminder.Id;
